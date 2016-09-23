@@ -280,12 +280,12 @@ Table of Contents
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |    code (1)   |    len (1)    |    option data (variable)     |
-    +---------------+---------------+-------------------------------+
+    |    code (1)   |            len (2)            | data ...
+    +---------------+-------------------------------+---------------+
 
     code - 1 byte - Option code
 
-    len - 1 byte - Length of option data
+    len - 2 byte - Length of option data as 16 bit integer.
 
     SETTINGS is sent from the server to a client and contains settings in the
     form of an option to configure the client. Possible information sent
@@ -325,61 +325,111 @@ Table of Contents
 
 2.4.3. Server IP
 
-    +---+---+-------------------------------+
-    | 1 | 4 | IPv4 address of master server |
-    +---+---+-------------------------------+
+     Code   Len         IP address of master server
+    +-----+-----+-----+-----+-----+-----+-----+
+    |  1  |     4     |  a1 |  a2 |  a3 |  a4 |
+    +-----+-----+-----+-----+-----+-----+-----+
 
     IP version 4 address of the master server. Typically will be the same as the
     IP to which it was sent. Returning a different IP can be used to migrate
     clients to a new master if needed.
 
-2.4.4. iPerf Server
+2.4.4. iPerf Server Address
 
-    +---+---+------------------------------+
-    | 1 | 4 | ipv4 address of iperf server |
-    +---+---+------------------------------+
-
-    Used when a client is requesting to start an iPerf job.
-
-2.4.5. iPerf Port
-
-    +---+---+-------------------+
-    | 1 | 2 | iperf server port |
-    +---+---+-------------------+
+     Code   Len         IP address of iPerf server
+    +-----+-----+-----+-----+-----+-----+-----+
+    |  2  |     4     |  a1 |  a2 |  a3 |  a4 |
+    +-----+-----+-----+-----+-----+-----+-----+
 
     Used when a client is requesting to start an iPerf job.
 
-2.4.6. iPerf Version
+2.4.5. iPerf Server Port
 
-    +---+---+---------------+
-    | 1 | 1 | iperf version |
-    +---+---+---------------+
+     Code   Len         iPerf Port
+    +-----+-----+-----+-----+-----+
+    |  3  |     2     |  n1 |  n2 |
+    +-----+-----+-----+-----+-----+
+
+    Used when a client is requesting to start an iPerf job.
+
+2.4.6. iPerf Server Version
+
+     Code   Len         Ver
+    +-----+-----+-----+-----+
+    |  4  |     1     |  n1 |
+    +-----+-----+-----+-----+
 
     Used when a client is requesting to start an iPerf job.As of this writting,
     this option value will either be 2 or 3.
 
-2.4.7. Timeout of Dynamic Job Resource
+2.4.7. Deadline of Dynamic Job Resource
 
-    +---+---+---------+
-    | 1 | 4 | timeout |
-    +---+---+---------+
+     Code   Len         Deadline
+    +-----+-----+-----+-----+-----+-----+-----+
+    |  5  |     4     |  n1 |  n2 |  n3 |  n4 |
+    +-----+-----+-----+-----+-----+-----+-----+
 
     The time duration in seconds that the allocated job resources will expire.
-    For example, if an iPerf server is used, the client will have Timeout secs
+    For example, if an iPerf server is used, the client will have Deadline secs
     to use the iPerf server before it's closed by the master server. Ideally,
-    the client would send and END message before this timeout.
+    the client would send an END message before this timeout.
 
 2.4.8. Protocol Version
 
-    +---+---+---------+
-    | 1 | 1 | version |
-    +---+---+---------+
+     Code   Len         Ver
+    +-----+-----+-----+-----+
+    |  6  |     4     |  n1 |
+    +-----+-----+-----+-----+
 
     The protocol version support by the master server.
 
-2.4.9. Vendor Options
+2.4.9 Client Software Version
 
-    TODO.
+     Code   Len         Symantic Version
+    +-----+-----+-----+-----+-----+-----+-----+
+    |  7  |     4     |  v1 |  v2 |  v3 |  v4 |
+    +-----+-----+-----+-----+-----+-----+-----+
+
+    The version of software the client should be running according to the server.
+    The version number order is major, minor, revision, and extra. Major, minor,
+    and revision are typical symantic versioning numbers. Extra can be used to
+    indicate version such as dev, alpha, beta, or release candidates. It's up to
+    the application whether or not extra is ever used.
+
+2.4.10 Client Software Repository
+
+     Code   Len         URI Path
+    +-----+-----+-----+-----+-----+-----+-----+---
+    |  8  |     n     |  p1 |  p2 |  p3 |  p4 | ...
+    +-----+-----+-----+-----+-----+-----+-----+---
+
+    The location a client can use to download client software. The actual update
+    mechanism is application specific. This could be a single tar ball located
+    on an open FTP server, or it could be an http directory that contains several
+    files. It doesn't really matter.
+
+2.4.11 Job Spec
+
+     Code   Len         Job Spec
+    +-----+-----+-----+-----+-----+-----+-----+---
+    |  9  |     n     |  s1 |  s2 |  s3 |  s4 | ...
+    +-----+-----+-----+-----+-----+-----+-----+---
+
+    An application specific job spec given to the client from the server. It
+    doesn't matter how the data is encoded, it could be CSV, JSON, XML, etc. So
+    long as both the client and server use the same spec.
+
+2.4.12. Vendor Options
+
+     Code   Len          Vendor Data
+    +-----+-----+-----+-----+-----+-----+-----+---
+    |  10 |     n     |  v1 |  v2 |  v3 |  v4 | ...
+    +-----+-----+-----+-----+-----+-----+-----+---
+
+    A vendor option allows servers to send any arbitrary data to clients. The
+    use or purpose of this data is up to the application. This option may be
+    used multiple times to send multiple items of data. If a client does not
+    need or understand the vendor data, it MUST ignore this option.
 
 2.5. DATA Types
 
