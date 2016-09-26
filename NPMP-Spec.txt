@@ -83,12 +83,9 @@ Table of Contents
 
 2.2. Message Types
 
-    Message types are used so the application knows how to process the data
-    portion of the message.
-
 2.2.1. REGISTER
 
-    REGISTER has a message code of 1. REGISTER has a data portion as follows:
+    REGISTER has a message code of 1 and the following data portion:
 
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
@@ -197,7 +194,7 @@ Table of Contents
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                       data length (4)                         |
+    |                          jobid (4)                            |
     +---------------------------------------------------------------+
     |    type (1)   |             data (variable)                   |
     +---------------+-----------------------------------------------+
@@ -207,10 +204,12 @@ Table of Contents
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |                       data length (4)                         |
+    |                          jobid (4)                            |
     +---------------+---------------+-------------------------------+
     |    type (1)   |  ventype (1)  |       data (variable)         |
     +---------------+---------------+-------------------------------+
+
+    jobid - 4 bytes - The ID of the job that generated the included data.
 
     type - 1 byte - 8 bit unsigned int indicating the type of data. This is
         used by the server to determine how the data should be processed.
@@ -233,8 +232,8 @@ Table of Contents
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |    len (1)    |           option codes (variable)             |
-    +---------------+-----------------------------------------------+
+    |                    option codes (variable)                    |
+    +---------------------------------------------------------------+
 
     len - 1 byte - The number of options being requested.
 
@@ -290,17 +289,11 @@ Table of Contents
     SETTINGS has a message code of 10 and its data portion is made up of zero or
     more options. An option takes the following form:
 
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |    code (1)   |                    len (4)                    |
-    +---------------+---------------+-------------------------------+
-    |    len (4)    |     data ...
+    0                   1
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |    code (1)   |     data ...
     +---------------+---------------+
-
-    code - 1 byte - Option code
-
-    len - 2 byte - Length of option data as 16 bit integer.
 
     SETTINGS is sent from the server to a client and contains settings in the
     form of an option to configure the client. Possible information sent
