@@ -57,11 +57,11 @@ Table of Contents
 
     The header is 4 bytes and uses the following format:
 
-    0                   1                   2
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |  version (1)  |   cookie (1)  | mess code (1) |
-    +---------------+--------------------------------
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |  version (1)  |           cookie (2)          | mess code (1) |
+    +---------------+-------------------------------+---------------+
 
     Version is an 8 bit unsigned int indicating the protocol version. The cookie
     is a magic string with the value 0x50 0x4d which is the ASCII string 'PM'.
@@ -230,9 +230,9 @@ Table of Contents
     INFORM is used by a client to request data from a server. The client SHOULD
     specify which options it wishes to receive. The server SHOULD only return
     the options the client requests, but MAY return all applicable options. The
-    MUST ignore options it didn't request. If a client sends an INFORM with a
-    length of 0, the server MUST return all applicable options. The client MAY
-    ignore options it doesn't need.
+    client MUST ignore options it didn't request. If a client sends an INFORM
+    with a length of 0, the server MUST return all applicable options. The
+    client MAY ignore options it doesn't need.
 
     INFORM is used to send job, update, and system information to the client.
     It CAN act as a heartbeat for the client.
@@ -274,7 +274,7 @@ Table of Contents
 
 2.2.10. SETTINGS
 
-    Settings has a message code of 10 and its data portion is made up of zero or
+    SETTINGS has a message code of 10 and its data portion is made up of zero or
     more options. An option takes the following form:
 
     0                   1                   2                   3
