@@ -235,16 +235,14 @@ Table of Contents
     |                    option codes (variable)                    |
     +---------------------------------------------------------------+
 
-    len - 1 byte - The number of options being requested.
-
     option codes - variable - Options being requested by the client.
 
     INFORM is used by a client to request data from a server. The client SHOULD
     specify which options it wishes to receive. The server SHOULD only return
     the options the client requests, but MAY return all applicable options. The
     client MUST ignore options it didn't request. If a client sends an INFORM
-    with a length of 0, the server MUST return all applicable options. The
-    client MAY ignore options it doesn't need.
+    with no option codes given, the server MUST return all applicable options.
+    The client MAY ignore options it doesn't need.
 
     INFORM is used to send job, update, and system information to the client.
     It CAN act as a heartbeat for the client.
