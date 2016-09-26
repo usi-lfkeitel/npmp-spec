@@ -289,11 +289,17 @@ Table of Contents
     SETTINGS has a message code of 10 and its data portion is made up of zero or
     more options. An option takes the following form:
 
-    0                   1
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6
-    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    |    code (1)   |     data ...
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |    code (1)   |                    len (4)                    |
+    +---------------+---------------+-------------------------------+
+    |    len (4)    |     data ...
     +---------------+---------------+
+
+    code - 1 byte - Option code
+
+    len - 2 byte - Length of option data as 16 bit integer.
 
     SETTINGS is sent from the server to a client and contains settings in the
     form of an option to configure the client. Possible information sent
