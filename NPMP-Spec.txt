@@ -64,7 +64,8 @@ Table of Contents
 
     NPMP datagrams have a fairly simple structure that consists of a header
     and a variable data portion depending on the message type. This
-    specification describes version 0 of NPMP.
+    specification describes version 0 of NPMP. TCP port 2120 SHOULD be used
+    for communication with an NPMP server.
 
 2.1 Header
 
