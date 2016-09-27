@@ -39,16 +39,13 @@ Table of Contents
     2.4.10. CLIENT SOFTWARE REPOSITORY
     2.4.11. JOB SPEC
     2.4.12. VENDOR OPTIONS
-    2.4.13. HEARTBEAT DURATION
     2.5.    DATA Types
     3.      Using the Protocol
     3.1.    Registering With a Server
     3.2.    Requesting Job Information
     3.3.    Running a Job
     3.4.    Sending Information to the Server
-    4.      Heartbeat
-    5.      Security Implications
-    6.      Copyright
+    4.      Security Implications
 
 1. Introduction
 
@@ -243,10 +240,8 @@ Table of Contents
     the options the client requests, but MAY return all applicable options. The
     client MUST ignore options it didn't request. If a client sends an INFORM
     with no option codes given, the server MUST return all applicable options.
-    The client MAY ignore options it doesn't need.
-
-    INFORM is used to send job, update, and system information to the client.
-    It CAN act as a heartbeat for the client.
+    The client MAY ignore options it doesn't need. INFORM is used to send job,
+    update, and system information to the client.
 
 2.2.7. VERSION
 
@@ -444,19 +439,6 @@ Table of Contents
     used multiple times to send multiple items of data. If a client does not
     need or understand the vendor data, it MUST ignore this option.
 
-2.4.13. Heartbeat Duration
-
-     Code   Len         Duration
-    +-----+-----+-----+-----+-----+-----+-----+
-    |  11 |     4     |  n1 |  n2 |  n3 |  n4 |
-    +-----+-----+-----+-----+-----+-----+-----+
-
-    The time duration in seconds that a client MUST checkin with the server
-    by sending an INFORM message. If the server does not get any message from
-    the client after this duration, it should consider the client unreachable
-    and remove it from any pool of current workers. A server SHOULD provide some
-    leeway to account for network latency and speed.
-
 2.5. DATA Types
 
     Code    Description
@@ -484,20 +466,7 @@ Table of Contents
 
     TODO.
 
-4. Heartbeat
-
-    A heartbeat is used to ensure a client is still up and that the server can
-    rely on it to run jobs and collect data. There is no specific heartbeat
-    message, instead the INFORM message takes the place. Clients SHOULD send
-    an INFORM message to the server within a specific time span as defined
-    by the application. When a client registers with the server, it MUST send
-    an INFORM message. This message MUST have a heartbeat SETTINGS options
-    to tell the client how many seconds are allowed between heartbeats. The
-    server SHOULD allow for leeway before it marks a client as offline. Latency
-    and other timing issues may cause a client to be a few seconds late. The
-    heartbeat duration MUST be specified in seconds as a relative time span.
-
-5. Security Implications
+4. Security Implications
 
     NPMP is built directly on TCP and IP which are as yet inherently insecure.
     Appropriate security should be taken to ensure data is transmitted safely
