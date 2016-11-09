@@ -73,6 +73,8 @@ Table of Contents
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
     |  version (1)  |           cookie (2)          | mess code (1) |
     +---------------+-------------------------------+---------------+
+    |                     Data Length (4)                           |
+    +---------------------------------------------------------------+
 
     Version is an 8 bit unsigned int indicating the protocol version. The cookie
     is a magic string with the value 0x50 0x4d which is the ASCII string 'PM'.
